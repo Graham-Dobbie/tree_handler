@@ -14,7 +14,7 @@ Node::Node(): children(), parent_node(nullptr), data(_make_data("", 0)) {};
 Node::Node (Node* parent_node_p, std::pair<std::string, float> data_p): children(), parent_node(parent_node_p), data(data_p) {};
 
 Node::~Node(){
-    std::cout << "Node: " << this->data.first << " Was Destroyed" << std::endl;
+    // std::cout << "Node: " << this->data.first << " Was Destroyed" << std::endl;
 }
 
 
@@ -89,16 +89,15 @@ std::string Tree::_get_str_segment(std::string string_p, int start_p, int end_p)
 }
 
 void Tree::make_move(int move_loc_p){ //Make child node the root node
-    this->print();
     Node* node_ptr = head_node_ptr->children[move_loc_p];
-    std::cout << node_ptr->parent_node->data.first << std::endl;
+    // std::cout << node_ptr->parent_node->data.first << std::endl;
     this->head_node_ptr = node_ptr;
 }
 
 
 void Tree::unmake_move(){ //Make parent of the root node the root node
     Node* node_ptr = head_node_ptr->parent_node;
-    std::cout << node_ptr->data.first << std::endl;
+    // std::cout << node_ptr->data.first << std::endl;
     this->head_node_ptr = node_ptr;
     
 }
@@ -155,7 +154,7 @@ void Tree::parse_text(std::string data_p){
     //Get data of the node
     std::string to_parse_str = data_p;
 
-    std::cout<< "curent string: " << to_parse_str << std::endl;
+    // std::cout<< "curent string: " << to_parse_str << std::endl;
 
     int start = -1;
     int end = -1;
@@ -193,7 +192,7 @@ void Tree::parse_text(std::string data_p){
         int end_of_children = end+3;
 
         if (to_parse_str.at(end+1) == (char)':'){
-            std::cout << "this node has child" << std::endl;
+            // std::cout << "this node has child" << std::endl;
 
             int depth = 1;
 
@@ -213,7 +212,7 @@ void Tree::parse_text(std::string data_p){
             }while (depth != 0);
 
             std::string parsed_text(_get_str_segment(to_parse_str, end+3, end_of_children-1));
-            std::cout <<parsed_text<< std::endl;
+            // std::cout <<parsed_text<< std::endl;
             //Add Children
             this->make_move(place);
             parse_text(parsed_text);
@@ -224,9 +223,9 @@ void Tree::parse_text(std::string data_p){
     // Test for siblings
     
         if (to_parse_str.at(end_of_children) == (char)'[') {
-            std::cout << "this node has silblings" << std::endl;
+            // std::cout << "this node has silblings" << std::endl;
             std::string parsed_text(_get_str_segment(to_parse_str, end_of_children, -1 ));
-            std::cout <<parsed_text<< std::endl;
+            // std::cout <<parsed_text<< std::endl;
 
             //Make Siblings
             parse_text(parsed_text);
@@ -234,27 +233,20 @@ void Tree::parse_text(std::string data_p){
         }
 
         if (to_parse_str.at(end+1) == (char)'['){
-            std::cout << "this node has silblings" << std::endl;
+            // std::cout << "this node has silblings" << std::endl;
             std::string parsed_text(_get_str_segment(to_parse_str, end+1, -1 ));
-            std::cout <<parsed_text<< std::endl;
+            // std::cout <<parsed_text<< std::endl;
 
             //Make Siblings
             parse_text(parsed_text);
         }
     }
-    
-    
 }
 
 
 
 void Tree::load_tree(std::string file_source){
     std::ifstream tree_file("weights.trf");
-
-    if(!tree_file.is_open()) {
-        std::cerr << "failed to open file" << std::endl;
-        return 1;
-        }
 
     std::string to_parse_str;
 
@@ -280,12 +272,29 @@ void Tree::load_tree(std::string file_source){
     std::pair<std::string, float> data = _parse_helper(parsed_text); //start
 
     if (data.first == ""){
-        
+        int end_root = end + 2;
+        int depth = 1;
+        do{
+               char c = to_parse_str[end_root];
+               if (c == (char)'('){
+                   depth ++;
+               }
+
+               if (c == (char)')'){
+                   depth += -1;
+               }
+
+               end_root++;
+
+           }while (depth != 0);
+
+        std::string string_data = _get_str_segment(to_parse_str,end, end_root);
+        parse_text(string_data);
     }
 
-
-    parse_text(to_parse_str);
-
+    else{
+        parse_text(to_parse_str);
+    }
 }
 
 
