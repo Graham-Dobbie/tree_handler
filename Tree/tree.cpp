@@ -15,6 +15,9 @@ Node::Node (Node* parent_node_p, std::pair<std::string, float> data_p): children
 
 Node::~Node(){
     // std::cout << "Node: " << this->data.first << " Was Destroyed" << std::endl;
+    for (int i = 0; i < children.size(); i++){
+        delete children[i];
+    }
 }
 
 
@@ -107,7 +110,7 @@ int Tree::add_child(std::string alg_move_p, float q_value_p){
     return size;
 }
 
-std::string Tree::format_node(Node* node_ptr_p){   // Recursive string formating
+std::string Tree::__format_node(Node* node_ptr_p){   // Recursive string formating
 
     
     auto format = [](auto data){return std::string("[") + std::string(data.first) + std::string(",") + std::to_string(data.second)+ std::string("]");};
@@ -121,7 +124,7 @@ std::string Tree::format_node(Node* node_ptr_p){   // Recursive string formating
         std::string children_str = ":(";
 
         for (std::vector<Node*>::iterator it = node_ptr_p->children.begin() ; it != node_ptr_p->children.end(); ++it){
-            children_str += format_node(*it);
+            children_str += __format_node(*it);
         }
 
         children_str += std::string(")");
@@ -133,15 +136,15 @@ std::string Tree::format_node(Node* node_ptr_p){   // Recursive string formating
 
 void Tree::print(Node*  node_ptr){
     if (node_ptr != NULL){
-        std::cout << format_node(node_ptr) << std::endl;
+        std::cout << __format_node(node_ptr) << std::endl;
     }
     else{
-        std::cout << format_node(this->root_node_ptr) << std::endl;
+        std::cout << __format_node(this->root_node_ptr) << std::endl;
     }
 }
 
 void Tree::save_tree(){
-    std::string payload = format_node(this->root_node_ptr);
+    std::string payload = __format_node(this->root_node_ptr);
     std::ofstream tree_file;
     tree_file.open(this->tree_file_path);
     tree_file << payload;
@@ -186,7 +189,6 @@ void Tree::parse_text(std::string data_p){
     
     
     //Test for Children
-    
     if (end != size-1){
         
         int end_of_children = end+3;
@@ -221,7 +223,6 @@ void Tree::parse_text(std::string data_p){
     
     
     // Test for siblings
-    
         if (to_parse_str.at(end_of_children) == (char)'[') {
             // std::cout << "this node has silblings" << std::endl;
             std::string parsed_text(_get_str_segment(to_parse_str, end_of_children, -1 ));
@@ -298,4 +299,31 @@ void Tree::load_tree(std::string file_source){
 }
 
 
+std::pair< std::string, float> Tree::get_head_data(){
+    return head_node_ptr->data;
+}
+
+
+std::vector<std::pair< std::string, float>> Tree::get_children_data(){
+    std::vector<Node*> children = head_node_ptr->children;
+    std::vector<std::pair< std::string, float>> children_data;
+
+    for (int i; i < children.size(); i++){
+        children_data.push_back(children[i]->data);
+    }
+
+    return children_data;
+}
+
+void Tree::multiply_node(float x){
+    head_node_ptr->data.second = head_node_ptr->data.second*x;
+}
+
+void Tree::add_node(float x){
+    head_node_ptr->data.second = head_node_ptr->data.second+x;
+}
+
+void Tree::rm_node(){
+    delete head_node_ptr;
+}
 
