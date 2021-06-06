@@ -1,5 +1,6 @@
 #include "tree.hpp"
 
+namespace tree {
 
 // Helper Functions
 
@@ -327,3 +328,4 @@ void Tree::rm_node(){
     delete head_node_ptr;
 }
 
+}
