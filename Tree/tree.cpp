@@ -328,4 +328,24 @@ void Tree::rm_node(){
     delete head_node_ptr;
 }
 
+void Tree::sort_nodes(Node* node_ptr){
+    // set head node
+    this->head_node_ptr = node_ptr;
+
+    // get children
+    std::vector<std::pair<std::string, float>> children =  this->get_children_data();
+
+    // get best node
+    int best_node = 0;
+    for( int i = 0; i <= children.size(); i++){
+        if (children[i].second >= children[best_node].second){
+            best_node = i;
+        }
+    }
+
+    Node* best_node_ptr = this->head_node_ptr->children[best_node];
+    this->head_node_ptr->children.erase(this->head_node_ptr->children.begin()+best_node);
+    this->head_node_ptr->children.insert(this->head_node_ptr->children.begin(), best_node_ptr);
+
+}
 }

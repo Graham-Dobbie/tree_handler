@@ -1,11 +1,11 @@
-#include <tree.hpp>
+#include "tree.hpp"
 
 using namespace std;
 
 
 int main(){
 
-    Tree TreeHandler;
+    tree::Tree TreeHandler;
 
     TreeHandler.add_child("e2e4", 0.1);
 

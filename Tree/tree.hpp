@@ -71,6 +71,8 @@ class Tree{
 
     void add_node(float x); // adds q_value inside the header node by a float
 
+    void sort_nodes(Node* node);
+
     //memory opporations
 
     void rm_node(); // calls recursive removal of a node and its children
